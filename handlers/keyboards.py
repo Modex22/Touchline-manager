@@ -1,17 +1,41 @@
-from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+import os
+from telegram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton, KeyboardButton, WebAppInfo
 from engine.tactics import FORMATIONS, MENTALITIES, PLAY_STYLES
+
+def get_webapp_url():
+    url = os.getenv("WEBAPP_URL") or os.getenv("RENDER_EXTERNAL_URL") or os.getenv("RENDER_EXTERNAL_HOSTNAME")
+    if url:
+        if not url.startswith("http://") and not url.startswith("https://"):
+            url = f"https://{url}"
+        return url
+    return None
 
 def get_main_menu_keyboard():
     """Persistent bottom reply keyboard for easy navigation at all times."""
+    url = get_webapp_url()
+    
+    top_row = []
+    if url:
+        top_row.append(KeyboardButton("🎮 Open Play Screen", web_app=WebAppInfo(url=url)))
+
     keyboard = [
         ["🏟️ My Club", "👥 Squad", "📋 Tactics"],
         ["⚽ Matchday", "🔄 Transfers", "📊 Standings"],
         ["🏋️ Training", "💰 Finances", "🖼️ Upload Logo"]
     ]
+    if top_row:
+        keyboard.insert(0, top_row)
+
     return ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
 def get_club_actions_inline():
-    keyboard = [
+    url = get_webapp_url()
+    keyboard = []
+    
+    if url:
+        keyboard.append([InlineKeyboardButton("🎮 Open Play Screen (App)", web_app=WebAppInfo(url=url))])
+
+    keyboard.extend([
         [
             InlineKeyboardButton("👥 View Squad", callback_data="nav_squad"),
             InlineKeyboardButton("📋 Tactics", callback_data="nav_tactics")
@@ -24,7 +48,7 @@ def get_club_actions_inline():
             InlineKeyboardButton("🏟️ Upgrade Stadium", callback_data="act_upgrade_stadium"),
             InlineKeyboardButton("🖼️ Change Badge", callback_data="act_prompt_logo")
         ]
-    ]
+    ])
     return InlineKeyboardMarkup(keyboard)
 
 def get_squad_actions_inline():

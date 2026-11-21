@@ -50,6 +50,8 @@ async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
         [InlineKeyboardButton("⭐ Pick Existing Football Club", callback_data="onboard_pick_real")]
     ]
     
+    webapp_url = db.os.getenv("WEBAPP_URL") if hasattr(db, 'os') else None
+    
     await update.message.reply_text(
         welcome_text,
         parse_mode="Markdown",
