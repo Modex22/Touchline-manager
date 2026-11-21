@@ -1,0 +1,12 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.venv/
+env/
+venv/
+
+# Game database & uploaded temp logos (database will be automatically created on Render)
+data/*.db
+data/logos/temp*

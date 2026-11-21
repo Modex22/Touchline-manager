@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: touchline-manager-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python bot.py
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: PORT
+        value: 10000
